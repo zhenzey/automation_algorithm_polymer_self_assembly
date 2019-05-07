@@ -1,0 +1,155 @@
+LAMMPS (31 Mar 2017)
+# 3D Self-assembly of BCP A5B5
+dimension	3
+boundary	p p p
+
+neighbor	1.0 bin
+neigh_modify	delay 5
+neigh_modify	one 10000
+
+atom_style	bond
+
+read_data	32378A2B8.dat
+  orthogonal box = (0 0 0) to (53.3863 46.2326 26.6932)
+  4 by 4 by 2 MPI processor grid
+  reading atoms ...
+  346308 atoms
+  scanning bonds ...
+  1 = max bonds/atom
+  reading bonds ...
+  297034 bonds
+  2 = max # of 1-2 neighbors
+  2 = max # of 1-3 neighbors
+  4 = max # of 1-4 neighbors
+  6 = max # of special neighbors
+
+bond_style	harmonic
+bond_coeff	1 50.0 1.0
+bond_coeff	2 50.0 0.2
+
+pair_style	dpd 1.0 1.0 34356
+pair_coeff	* * 15.0 4.50 1.0
+pair_coeff	1 2 29.5 4.50 1.0
+pair_coeff	1 3 15.0 4.50 0.2
+pair_coeff	2 3 29.5 4.50 0.2
+
+group		boundary type 3
+16896 atoms in group boundary
+
+comm_modify	vel yes
+velocity	all create 1.0 34356
+velocity	all zero linear
+velocity	all zero angular
+velocity	boundary set 0.0 0.0 0.0
+
+
+#compute	myRDF all rdf 500 1 1 cutoff 4.5
+#fix 		1 all ave/time 100 1 100 c_myRDF[*] file tmp1.rdf mode vector
+#comm_modify	cutoff 5.5
+
+fix		2 all nvt temp 1.0 1.0 0.015
+fix		3 boundary setforce 0.0 0.0 0.0
+#fix  		3 all wall/lj93 xlo 0.0 1 1 2 3.5 xhi $x 1 1 2.5
+#fix   		4 all wall/lj93 ylo 0.0 1 1 2 3.5 yhi $y 1 1 2.5
+
+
+# Run
+
+timestep	0.02
+thermo		1000
+#thermo_modify	temp mobile
+dump		1 all atom 200 dump.A2B8_thin_film_with_wall_XN_100_22
+
+#dump		2 all image 500 image.*.jpg type type #		zoom 1.6 adiam 1.5
+#dump_modify	2 pad 5
+
+#dump		3 all movie 500 movie.mpg type type #		zoom 1.6 adiam 1.5
+#dump_modify	3 pad 5
+
+run		40000
+Neighbor list info ...
+  update every 1 steps, delay 5 steps, check yes
+  max neighbors/atom: 10000, page size: 100000
+  master list distance cutoff = 2
+  ghost atom cutoff = 2
+  binsize = 1, bins = 54 47 27
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair dpd, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 8.177 | 78.64 | 308.2 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0   0.95110751    258.88164   0.50959457    260.81789    1053.6737 
+    1000    0.9997501    7.8275674    0.4901404    9.8173286    47.624738 
+    2000    1.0015505    7.4416049   0.49578052    9.4397068    47.699734 
+    3000   0.99894034    7.4137801   0.49393391    9.4061202     47.65617 
+    4000   0.99848178    7.3989064   0.49188155    9.3885062    47.724078 
+    5000     1.000656    7.3910515   0.48933985    9.3813711    47.824602 
+    6000    1.0013012    7.3776233   0.48753399    9.3671048    47.797271 
+    7000   0.99865751    7.3671671   0.48255833    9.3477074     47.75797 
+    8000    1.0013168    7.3595455   0.48107892    9.3425953    47.894431 
+    9000     1.000809    7.3518278   0.48074059    9.3337776    47.777079 
+   10000    0.9987023    7.3486307   0.47978115    9.3264609    47.823399 
+   11000    1.0011173    7.3455996    0.4813387      9.32861    47.774126 
+   12000    1.0020558    7.3486913   0.48163061    9.3334013    47.734245 
+   13000   0.99937525    7.3478099   0.48245594    9.3293244    47.711308 
+   14000   0.99860055    7.3495467   0.47924743    9.3266907     47.75339 
+   15000    1.0004417    7.3482977   0.48202598    9.3309819    47.612491 
+   16000   0.99985769    7.3502982   0.48128911    9.3313695    47.760849 
+   17000    1.0003461    7.3533062   0.48286706     9.336688    47.649723 
+   18000   0.99702752    7.3484891   0.48166207    9.3256882     47.73156 
+   19000   0.99866148    7.3481115    0.4822971    9.3283965    47.632332 
+   20000    1.0004073    7.3499486    0.4795986    9.3301538    47.660886 
+   21000    1.0023048    7.3478129   0.48158556    9.3328512    47.718666 
+   22000   0.99991318    7.3473899   0.48066006    9.3279154    47.712039 
+   23000   0.99806043    7.3495471   0.48271259     9.329346    47.636874 
+   24000   0.99886021    7.3484678   0.48017808    9.3269319    47.641316 
+   25000    1.0006492    7.3498709   0.48147139    9.3323117    47.644892 
+   26000    1.0001303    7.3500181   0.48217613    9.3323854    47.674151 
+   27000     1.000254    7.3449813   0.48255058    9.3279085    47.640263 
+   28000     1.003578    7.3479228   0.48071659    9.3340021    47.607471 
+   29000    1.0015921     7.347145   0.48317106       9.3327    47.664408 
+   30000   0.99912512    7.3416456   0.48010449    9.3204334    47.712324 
+   31000   0.99962357    7.3476914   0.47961187    9.3267343    47.670207 
+   32000    1.0039927    7.3453103   0.47997125    9.3312662    47.686762 
+   33000    1.0015978    7.3472847   0.48109157    9.3307687    47.600142 
+   34000    0.9994392    7.3433531   0.48156056    9.3240681    47.711793 
+   35000    1.0017357    7.3480107   0.47852712     9.329137    47.662694 
+   36000   0.99893274    7.3497729   0.48055577    9.3287235    47.667426 
+   37000      1.00103    7.3450803   0.47953755    9.3261585    47.685845 
+   38000   0.99908069    7.3459351   0.48290996    9.3274617    47.536605 
+   39000    1.0011675    7.3476796   0.47873084    9.3281574     47.66945 
+   40000    0.9997959    7.3504736    0.4818462    9.3320094    47.707618 
+Loop time of 1923.61 on 32 procs for 40000 steps with 346308 atoms
+
+Performance: 35932.376 tau/day, 20.794 timesteps/s
+99.5% CPU use with 32 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 916.24     | 969.81     | 1064.6     | 105.7 | 50.42
+Bond    | 22.097     | 23.653     | 27.276     |  24.0 |  1.23
+Neigh   | 655.87     | 658.05     | 663.12     |   6.7 | 34.21
+Comm    | 144.04     | 236.71     | 290.3      | 209.3 | 12.31
+Output  | 3.4033     | 5.1638     | 6.2646     |  31.1 |  0.27
+Modify  | 17.254     | 17.546     | 17.872     |   4.8 |  0.91
+Other   |            | 12.68      |            |       |  0.66
+
+Nlocal:    10822.1 ave 10928 max 10725 min
+Histogram: 2 1 4 7 4 4 5 1 3 1
+Nghost:    14597.4 ave 14711 max 14459 min
+Histogram: 1 0 3 4 4 5 8 5 0 2
+Neighs:    897953 ave 911106 max 885833 min
+Histogram: 3 1 2 4 6 10 1 1 2 2
+
+Total # of neighbors = 28734485
+Ave neighs/atom = 82.9738
+Ave special neighs/atom = 4.52028
+Neighbor list builds = 7917
+Dangerous builds = 7509
+
+write_data	finalasymmetric_22.dat
+Total wall time: 0:32:10
